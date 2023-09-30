@@ -12,12 +12,14 @@ const emit = defineEmits<{
 const ipify = new IPIFY();
 const serachValue = ref('');
 const isInvalid = ref(false);
-
+const isLoading = ref(false);
 watch(serachValue, () => {
   if (isInvalid.value) isInvalid.value = false;
 });
 
 const handleSearch = async () => {
+  if (isLoading.value) return;
+  isLoading.value = true;
   const response = await ipify.search(serachValue.value);
   if (response === 'ERROR') {
     isInvalid.value = true;
@@ -27,6 +29,7 @@ const handleSearch = async () => {
     location.value = response;
     emit('setLocation', location.value);
   }
+  isLoading.value = false;
 };
 </script>
 
@@ -34,7 +37,7 @@ const handleSearch = async () => {
   <div
     class="container gap-6 flex flex-col justify-items-center items-center h-full relative"
   >
-    <h1 class="text-white sm:text-4xl text-2xl mt-10 font-bold">
+    <h1 class="text-white sm:text-3xl text-xl mt-10 font-bold">
       IP Address Tracker
     </h1>
     <!-- search input -->
@@ -46,11 +49,13 @@ const handleSearch = async () => {
           :class="{ ' border-red-500  border-2': isInvalid }"
           type="text"
           v-model="serachValue"
+          :disabled="isLoading"
           @keyup.enter="handleSearch"
         />
         <button
           @click="handleSearch"
           class="p-3 rounded-r-xl bg-black text-white w-[50px] active:opacity-70"
+          :disabled="isLoading"
         >
           <Right_Arrow />
         </button>
@@ -59,7 +64,7 @@ const handleSearch = async () => {
         invalid IP address or domain
       </span>
     </div>
-    <LocationBoxVue :location="location" />
+    <LocationBoxVue v-if="location !== null" :location="location" />
   </div>
 </template>
 
@@ -71,7 +76,8 @@ const handleSearch = async () => {
   background-repeat: no-repeat;
   background-size: cover;
 }
-@media screen and (max-width: 400px) {
+
+@media screen and (max-width: 500px) {
   .container {
     background-image: url('/images/pattern-bg-mobile.png');
   }

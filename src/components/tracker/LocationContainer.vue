@@ -1,21 +1,28 @@
 <script setup lang="ts">
 import type { Ipify_Response } from '@/types/apis';
 import LocationItem from './LocationItem.vue';
+import { computed } from 'vue';
 
-const { location } = defineProps<{
-  location: Ipify_Response | null;
+const props = defineProps<{
+  location: Ipify_Response;
 }>();
+console.log(props.location);
+const locationValues = computed(() => [
+  { label: 'ip address', value: props.location.ip },
+  { label: 'location', value: props.location.location.region },
+  { label: 'timezone', value: 'UTC ' + props.location.location.timezone },
+  { label: 'isp', value: props.location.isp }
+]);
 </script>
 
 <template>
-  <div v-if="location" class="sm:divide-x-2 location-container">
-    <LocationItem :label="'ip address'" :value="location.ip" />
+  <div class="xs:divide-x location-container">
     <LocationItem
-      :label="'location'"
-      :value="location.location.country + location.location.region"
+      v-for="{ label, value } in locationValues"
+      :label="label"
+      :value="value"
+      :key="value"
     />
-    <LocationItem :label="'ip address'" :value="location.ip" />
-    <LocationItem :label="'ip address'" :value="location.ip" />
   </div>
 </template>
 
@@ -25,21 +32,20 @@ const { location } = defineProps<{
   position: absolute;
   width: 90vw;
   z-index: 1000;
-  display: grid;
+  justify-content: space-around;
+  display: flex;
   padding: 10px;
-  justify-content: center;
   align-items: center;
-  min-height: 130px;
-  max-height: 150px;
-  gap: 1rem;
+  gap: 2rem;
   top: 78%;
   background-color: white;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 499.9px) {
   .location-container {
-    top: 50%;
+    top: 61%;
+
+    flex-direction: column;
   }
 }
 </style>

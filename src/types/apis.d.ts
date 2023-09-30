@@ -1,3 +1,5 @@
+import type { GeoJSONSource } from 'mapbox-gl';
+
 export type Ipify_Response = {
   ip: string;
   location: {

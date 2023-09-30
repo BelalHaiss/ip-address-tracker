@@ -21,25 +21,34 @@ export class IPIFY {
     return regex.test(name);
   }
 
-  search(value: string) {
+  async search(value: string) {
     if (this.isValidDomainName(value)) this.queryType = 'domain';
     else if (this.isValidIPv4(value)) this.queryType = 'ipAddress';
     else {
       console.error('value is not valid ip or domain');
       return 'ERROR';
     }
-    return fetcher<Ipify_Response>({
+    // check if cached
+    const cached = localStorage.getItem(value);
+    if (cached) return JSON.parse(cached) as Ipify_Response;
+    const response = await fetcher<Ipify_Response>({
       url: this.url + this.queryType + '=' + value
     });
+    if (response) {
+      localStorage.setItem(value, JSON.stringify(response));
+    }
+    return response;
   }
 }
 
-const fetcher = async <T>({
+export const fetcher = async <T>({
   method = 'GET',
   url
 }: FETCHER): Promise<void | T> => {
   try {
-    const res = await fetch(url, { method });
+    const res = await fetch(url, {
+      method
+    });
     const response: T = await res.json();
     return response;
   } catch (error) {

@@ -6,8 +6,10 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center sm:justify-start">
-    <p class="text-sm capitalize font-bold text-slate-400">{{ label }}</p>
-    <p class="text-xl font-bold">{{ value }}</p>
+  <div
+    class="flex flex-1 flex-col items-center h-[50px] xs:h-[90px] justify-center pl-2"
+  >
+    <p class="text-sm uppercase font-bold text-slate-400">{{ label }}</p>
+    <p class="text-lg xs:text-sm md:text-xl font-bold">{{ value }}</p>
   </div>
 </template>
