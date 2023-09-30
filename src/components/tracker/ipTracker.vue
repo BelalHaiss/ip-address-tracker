@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Right_Arrow from '../icons/arrow.vue';
-import { IPIFY } from '@/utils/apis';
+import { IPIFY, fetcher } from '@/utils/apis';
 import type { Ipify_Response } from '@/types/apis';
 import LocationBoxVue from './LocationContainer.vue';
 
@@ -13,6 +13,18 @@ const ipify = new IPIFY();
 const serachValue = ref('');
 const isInvalid = ref(false);
 const isLoading = ref(false);
+
+onMounted(async () => {
+  const client_ip = await fetcher<{ ip: string }>({
+    url: 'https://api.ipify.org/?format=json'
+  });
+
+  if (client_ip) {
+    serachValue.value = client_ip.ip;
+    handleSearch();
+  }
+});
+
 watch(serachValue, () => {
   if (isInvalid.value) isInvalid.value = false;
 });
@@ -21,6 +33,8 @@ const handleSearch = async () => {
   if (isLoading.value) return;
   isLoading.value = true;
   const response = await ipify.search(serachValue.value);
+  isLoading.value = false;
+
   if (response === 'ERROR') {
     isInvalid.value = true;
     return;
@@ -29,7 +43,6 @@ const handleSearch = async () => {
     location.value = response;
     emit('setLocation', location.value);
   }
-  isLoading.value = false;
 };
 </script>
 

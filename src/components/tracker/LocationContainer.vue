@@ -6,7 +6,6 @@ import { computed } from 'vue';
 const props = defineProps<{
   location: Ipify_Response;
 }>();
-console.log(props.location);
 const locationValues = computed(() => [
   { label: 'ip address', value: props.location.ip },
   { label: 'location', value: props.location.location.region },

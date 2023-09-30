@@ -23,12 +23,14 @@ watch(
   () => props.location,
   async (location) => {
     if (!location) return;
+    const { country, region } = location.location;
     const response = await fetcher<GeoJSON.FeatureCollection>({
-      url: `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        location.location.region
-      )}.json?access_token=${mapboxgl.accessToken}`
+      url: `https://api.mapbox.com/geocoding/v5/mapbox.places/${
+        country + ' ' + region
+      }.json?access_token=${mapboxgl.accessToken}`
     });
 
+    console.log({ response });
     if (response) {
       // @ts-ignore point type
       const { coordinates } = response.features[0].geometry;
