@@ -43,7 +43,7 @@ const locationValues = computed(() => [
 @media screen and (max-width: 499.9px) {
   .location-container {
     top: 61%;
-
+    gap: 1rem;
     flex-direction: column;
   }
 }
