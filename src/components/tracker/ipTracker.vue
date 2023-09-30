@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>();
 const ipify = new IPIFY();
 const serachValue = ref('');
+const inital_client_ip = ref('');
 const isInvalid = ref(false);
 const isLoading = ref(false);
 
@@ -20,7 +21,7 @@ onMounted(async () => {
   });
 
   if (client_ip) {
-    serachValue.value = client_ip.ip;
+    inital_client_ip.value = client_ip.ip;
     handleSearch();
   }
 });
@@ -32,7 +33,9 @@ watch(serachValue, () => {
 const handleSearch = async () => {
   if (isLoading.value) return;
   isLoading.value = true;
-  const response = await ipify.search(serachValue.value);
+
+  const query = serachValue.value ? serachValue.value : inital_client_ip.value;
+  const response = await ipify.search(query);
   isLoading.value = false;
 
   if (response === 'ERROR') {

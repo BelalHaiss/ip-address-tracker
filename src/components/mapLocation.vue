@@ -32,11 +32,10 @@ watch(
 
     console.log({ response });
     if (response) {
-      // @ts-ignore point type
+      // @ts-ignore  //geometry is point type is missing on the type package
       const { coordinates } = response.features[0].geometry;
       const marker = new mapboxgl.Marker().setLngLat(coordinates).addTo(map);
 
-      // Center the map on Cairo
       map.flyTo({
         center: coordinates,
         zoom: 10, // Adjust the zoom level as needed
@@ -49,5 +48,5 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-full" id="map">location</div>
+  <div class="min-h-full" id="map"></div>
 </template>
